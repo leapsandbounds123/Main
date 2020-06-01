@@ -108,10 +108,20 @@ df1 %>%
 #Linear regression with features: unemployment population and population density
 plot(log(df1$unemploy), log(df1$confirmed))
 plot(log(df1$Pop_density), log(df1$confirmed))
-lm1 <- lm(log(confirmed) ~ log(unemploy) + log(df1$Pop_density), df1)
+y <- log(df1$confirmed)
+x1 <- log(df1$unemploy)
+x2 <- log(df1$Pop_density)
+lm1 <- lm(y ~ x1 + x2)
 summary(lm1) #Coefs are positive meaning that there is a positive association 
              #between those two features and the confirmed cases.
              #Moreover, p-values for two features are both significant.
+df_clean <- df1 %>%
+  slice(-c(9, 33))
+plot(predict(lm1, data.frame(x1 = df_clean$unemploy, x2 = df_clean$Pop_density)),
+     df_clean$confirmed, 
+     pch = 20, col = "lightblue", 
+     xlab = "Fitted confirmed cases", ylab = "Observed confirmed cases",
+     main = "Fitted vs. Observed (after excluding the outliers)")
 plot(lm1)
 
 #The following codes are trying to visualize and analyze the relationship 
